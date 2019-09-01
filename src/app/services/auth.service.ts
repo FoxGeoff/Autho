@@ -14,6 +14,27 @@ export class AuthService {
       this.user = user;
     });
   }
+  isLoggedIn(): boolean {
+    return this.user != null && !this.user.expired;
+  }
+
+  getClaims(): any {
+    return this.user.profile;
+  }
+
+  getAuthorizationHeaderValue(): string {
+    return `${this.user.token_type} ${this.user.access_token}`;
+  }
+
+  startAuthentication(): Promise<void> {
+    return this.manager.signinRedirect();
+  }
+
+  completeAuthentication(): Promise<void> {
+    return this.manager.signinRedirectCallback().then(user => {
+      this.user = user;
+    });
+  }
 }
 
 export function getClientSettings(): UserManagerSettings {
